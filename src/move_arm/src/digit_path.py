@@ -68,22 +68,22 @@ class DigitPlanner:
 
 
 def zero(init_pose: Pose):
-    pose_target = init_pose
+    curr_pose = init_pose
 
     waypoints = []
-    waypoints.append(copy.deepcopy(pose_target))
+    waypoints.append(copy.deepcopy(curr_pose))
 
-    pose_target.position.y -= 0.05
-    waypoints.append(copy.deepcopy(pose_target))
+    curr_pose.position.y -= 0.05
+    waypoints.append(copy.deepcopy(curr_pose))
 
-    pose_target.position.x -= 0.1
-    waypoints.append(copy.deepcopy(pose_target))
+    curr_pose.position.x -= 0.1
+    waypoints.append(copy.deepcopy(curr_pose))
     
-    pose_target.position.y += 0.05
-    waypoints.append(copy.deepcopy(pose_target))
+    curr_pose.position.y += 0.05
+    waypoints.append(copy.deepcopy(curr_pose))
     
-    pose_target.position.x += 0.1
-    waypoints.append(copy.deepcopy(pose_target))
+    curr_pose.position.x += 0.1
+    waypoints.append(copy.deepcopy(curr_pose))
 
     return waypoints
 
