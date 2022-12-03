@@ -28,7 +28,7 @@ def main():
 
     while not rospy.is_shutdown():
 
-        full_waypoints = generate_path(0)
+        full_waypoints = generate_path(10)
         execute_path(full_waypoints)
 
 def generate_path(number):
@@ -38,21 +38,20 @@ def generate_path(number):
     '''
     # TODO: generate the complete set of waypoints to write 123
     # initial starting point
-    init_pose = Pose()
-    init_pose.position.x = 0.5
-    init_pose.position.y = 0.5
-    init_pose.position.z = 0.0
-    init_pose.orientation.y = -1
-    full_waypoints.append(init_pose)
-
-    curr_pose = Pose()
+    upper_pose = Pose()
+    upper_pose.position.x = 0.5
+    upper_pose.position.y = 0.5
+    upper_pose.position.z = 0.0
+    upper_pose.orientation.y = -1
+    lower_pose = upper_pose
+    full_waypoints = []
 
     for c in str(number):
-        curr_pose = init_pose
-        full_waypoints.append(digit_path.zero(curr_pose)) # TODO change .zero
-        curr_pose.position.z += 0.3
-        full_waypoints.append(curr_pose)
-        init_pose.position.y -= 0.2
+        full_waypoints.append(upper_pose)
+        lower_pose.position.z = upper_pose.position.z - 0.1
+        full_waypoints.append(lower_pose)
+        full_waypoints.extend(digit_path.zero(lower_pose)) # TODO change .zero
+        upper_pose.position.y -= 0.2
     return full_waypoints
 
 def execute_path(waypoints):
