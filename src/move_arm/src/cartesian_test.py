@@ -31,43 +31,6 @@ def main():
         full_waypoints = generate_path(0)
         execute_path(full_waypoints)
 
-
-        # pose_target = Pose()
-        # # print(pose_target)
-
-        # # horizantal write
-        # pose_target.position.x = 0.5
-        # pose_target.position.y = 0.5
-        # pose_target.position.z = 0.0
-        # pose_target.orientation.y = -1
-
-        # waypoints = digit_path.zero(pose_target)
-
-
-        # # group.set_pose_target(request.ik_request.pose_stamped)
-
-        # # ocm = OrientationConstraint()
-        # # ocm.link_name = "right_"
-        # # ocm.header.frame_id = "base"
-        # # ocm.orientation.w = 1.0;
-        # # ocm.absolute_x_axis_tolerance = 0.1;
-        # # ocm.absolute_y_axis_tolerance = 0.1;
-        # # ocm.absolute_z_axis_tolerance = 0.1;
-        # # ocm.weight = 1.0;
-        # # group.setPathConstraints([ocm]);
-
-        # # group.set_pose_target(request.ik_request.pose_stamped)
-
-        # print("planning......")
-        # plan = group.compute_cartesian_path(waypoints, 0.01, 0.0)
-        # # print(plan)
-        # rospy.sleep(2.0)
-        # temp = input("pause to see Rviz, y to execute")
-        # if temp == "y":
-        #     group.execute(plan[0])
-        # rospy.sleep(2.0)
-
-
 def generate_path(number):
     '''
     generate the waypoints for the whole path
@@ -89,7 +52,7 @@ def generate_path(number):
         full_waypoints.append(digit_path.zero(curr_pose)) # TODO change .zero
         curr_pose.position.z += 0.3
         full_waypoints.append(curr_pose)
-        init_pose.position.x += 0.2
+        init_pose.position.y -= 0.2
     return full_waypoints
 
 def execute_path(waypoints):
