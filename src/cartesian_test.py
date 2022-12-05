@@ -7,12 +7,26 @@ import digit_path
 
 from intera_interface import gripper as robot_gripper
 
+from formula_rec.srv import GetSolutionInt
+
 def main():
-    # Wait for the IK service to become available
-    rospy.wait_for_service('compute_ik')
-    rospy.init_node('service_query')
-    # Create the function used to call the service
-    compute_ik = rospy.ServiceProxy('compute_ik', GetPositionIK)
+    # Wait until patrol service is ready
+
+    rospy.init_node('cartesian_test')
+    # Wait until patrol service is ready
+    rospy.wait_for_service('/formula_rec/get_solution_int')
+    try:
+        # Acquire service proxy
+        request_cv_proxy = rospy.ServiceProxy(
+            '/formula_rec/get_solution_int', GetSolutionInt)
+        num_of_try = 10
+        rospy.loginfo('Sending request to server')
+        # Call patrol service via the proxy
+        answer = request_cv_proxy(num_of_try)
+    except rospy.ServiceException as e:
+        rospy.loginfo(e)
+        answer = 0
+
     
     right_gripper = robot_gripper.Gripper('right_gripper')
     close_gripper = None
@@ -23,8 +37,8 @@ def main():
 
 
     while not rospy.is_shutdown():
-
-        full_waypoints = generate_path(479)
+        rospy.loginfo(f'got result {answer}')
+        full_waypoints = generate_path(answer.results)
         execute_path(full_waypoints)
 
 def generate_path(number):
