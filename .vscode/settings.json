@@ -1,0 +1,9 @@
+{
+    "python.analysis.typeCheckingMode": "off",
+    "python.autoComplete.extraPaths": [
+        "../../devel/lib/python3/dist-packages/"
+    ],
+    "python.analysis.extraPaths": [
+        "../../devel/lib/python3/dist-packages/"
+    ]
+}
