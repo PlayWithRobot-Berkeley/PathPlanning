@@ -1,12 +1,8 @@
 #!/usr/bin/env python
 import rospy
-from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest, GetPositionIKResponse
-from geometry_msgs.msg import PoseStamped, Pose
+from moveit_msgs.srv import GetPositionIK
+from geometry_msgs.msg import Pose
 from moveit_commander import MoveGroupCommander
-import numpy as np
-from numpy import linalg
-import sys
-import copy
 import digit_path
 
 from intera_interface import gripper as robot_gripper
@@ -28,7 +24,7 @@ def main():
 
     while not rospy.is_shutdown():
 
-        full_waypoints = generate_path(10)
+        full_waypoints = generate_path(479)
         execute_path(full_waypoints)
 
 def generate_path(number):
@@ -41,17 +37,24 @@ def generate_path(number):
     upper_pose = Pose()
     upper_pose.position.x = 0.5
     upper_pose.position.y = 0.5
-    upper_pose.position.z = 0.0
+    upper_pose.position.z = 0.1
     upper_pose.orientation.y = -1
-    lower_pose = upper_pose
+    lower_pose = Pose()
+    lower_pose.position.x = 0.5
+    lower_pose.position.y = 0.5
+    lower_pose.position.z = 0.1
+    lower_pose.orientation.y = -1
+
     full_waypoints = []
+
+    dp = digit_path.DigitPlanner("config/digits.yml")
 
     for c in str(number):
         full_waypoints.append(upper_pose)
         lower_pose.position.z = upper_pose.position.z - 0.1
-        full_waypoints.append(lower_pose)
-        full_waypoints.extend(digit_path.zero(lower_pose)) # TODO change .zero
-        upper_pose.position.y -= 0.2
+        full_waypoints.extend(dp.plan_for_digit(int(c), lower_pose))
+        upper_pose.position.y -= 0.15
+        lower_pose.position.y -= 0.15
     return full_waypoints
 
 def execute_path(waypoints):
@@ -60,9 +63,9 @@ def execute_path(waypoints):
     group.set_pose_reference_frame("base")
     
     print("planning......")
-    plan = group.compute_cartesian_path(waypoints, 0.01, 0.0)
+    plan = group.compute_cartesian_path(waypoints, 0.01, 0)
     # print(plan)
-    rospy.sleep(2.0)
+    # rospy.sleep(2.0)
     temp = input("pause to see Rviz, y to execute")
     if temp == "y":
         group.execute(plan[0])

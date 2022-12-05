@@ -4,8 +4,13 @@ import os
 from typing import Dict, List
 import yaml
 
-from geometry_msgs.msg import PoseStamped, Pose
+import rospkg
 
+from geometry_msgs.msg import Pose
+
+
+ROS_PKG = rospkg.RosPack()
+PKG_PATH = ROS_PKG.get_path('path_planning')
 
 class DigitPlanner: 
     """ The planner for the digits 0~9
@@ -13,11 +18,12 @@ class DigitPlanner:
     Params
     ------
     config_file: a string for the YAML file's path. The yaml file is
-        expected to contain: each digit's waypoints
+        expected to contain: each digit's waypoints.
+        RELATIVE TO THE PACKAGE DIR, e.g. `config/digits.yml`
     """
     def __init__(self, config_file: str): 
         self._digit_path_map: Dict[int, List[Dict[str, int]]] = None
-        self._read_yaml(config_file)
+        self._read_yaml(os.path.join(PKG_PATH, config_file))
 
 
     def _read_yaml(self, config_file: str): 
@@ -40,7 +46,7 @@ class DigitPlanner:
         
         self._digit_path_map = data
 
-    def plan_for_digit(digit_idx: int, init_pose: Pose) -> List[Pose]:
+    def plan_for_digit(self, digit_idx: int, init_pose: Pose) -> List[Pose]:
         """ Generate the waypoints for a given digit
 
         Params

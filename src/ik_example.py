@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 import rospy
-from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest, GetPositionIKResponse
-from geometry_msgs.msg import PoseStamped
+from moveit_msgs.srv import GetPositionIK, GetPositionIKRequest
 from moveit_commander import MoveGroupCommander
-import numpy as np
-from numpy import linalg
-import sys
 
 from intera_interface import gripper as robot_gripper
 
