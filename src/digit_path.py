@@ -59,7 +59,7 @@ class DigitPlanner:
         A list of Pose, i.e., waypoints, to write down THIS digit
         """
         assert 0 <= digit_idx <= 9, f"invalid digit {digit_idx}" 
-        pose_target = init_pose
+        pose_target = copy.deepcopy(init_pose)
 
         waypoints = []
         waypoints.append(copy.deepcopy(pose_target))
