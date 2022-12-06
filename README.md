@@ -80,7 +80,12 @@ the ROS's paradigm:
 
 The source codes, where the python file as the entry to the path planning is the `cartesian_test.py`.
 The file imports the `digit_path.py` which is in charge of gernerating each individual digit's path
-so that this file can connect them together to form a complete motion. 
+so that this file can connect them together to form a complete motion.
+
+_The other two python files: `gripper_test.py` and `multipose.py` are used for testing and debugging.
+They instructs the robotic arm to complete simple task such as closing the gripper or moving its
+end-effector following a certain path to demonstrate the basic functionalities of a robotic arm is
+normal (so that we can know it is our codes that corrupts X\_X)._
 
 #### `config` directory
 
