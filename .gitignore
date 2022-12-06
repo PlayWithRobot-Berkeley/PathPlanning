@@ -1,7 +1,3 @@
-.catkin_workspace
-*.swp
-build/
-devel/
-intera.sh
 *.pyc
-__pycache__
+intel/
+.vscode/
