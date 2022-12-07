@@ -8,26 +8,25 @@ import digit_path
 
 from intera_interface import gripper as robot_gripper
 
-# from formula_rec.srv import GetSolutionInt
+from formula_rec.srv import GetSolutionInt
 
 def main():
     # Wait until patrol service is ready
-    answer = 38
 
     rospy.init_node('cartesian_test')
     # Wait until patrol service is ready
     # rospy.wait_for_service('/formula_rec/get_solution_int')
     try:
         # Acquire service proxy
-        # request_cv_proxy = rospy.ServiceProxy(
-        #     '/formula_rec/get_solution_int', GetSolutionInt)
+        request_cv_proxy = rospy.ServiceProxy(
+            '/formula_rec/get_solution_int', GetSolutionInt)
         num_of_try = 10
         rospy.loginfo('Sending request to server')
         # Call patrol service via the proxy
-        # answer = request_cv_proxy(num_of_try)
+        answer = request_cv_proxy(num_of_try)
     except rospy.ServiceException as e:
         rospy.loginfo(e)
-        answer = 0
+        answer = None
 
     
     right_gripper = robot_gripper.Gripper('right_gripper')
@@ -38,10 +37,10 @@ def main():
 
 
 
-    while not rospy.is_shutdown():
+    while answer is not None and not rospy.is_shutdown():
 
         rospy.loginfo(f'got result {answer}')
-        full_waypoints = generate_path(answer)
+        full_waypoints = generate_path(answer.results)
         execute_path(full_waypoints)
 
 def generate_path(number):
@@ -61,6 +60,21 @@ def generate_path(number):
     lower_pose.position.y = 0.5
     lower_pose.position.z = -0.1
     lower_pose.orientation.y = -1
+  #   capture_pose = Pose()
+  #   capture_pose.position.x = 0.5
+  #   capture_pose.position.y = 0.5
+  #   capture_pose.position.z = -0.1
+  #    -: 0.891
+  # -: 0.103
+  # -: 0.126
+  #   capture_pose.orientation.x = -1
+  #   capture_pose.orientation.y = -1
+  #   capture_pose.orientation.z = -1
+  #   capture_pose.orientation.w = -1
+  #    -: -0.020
+  # -: 0.718
+  # -: 0.018
+  # -: 0.696
 
     full_waypoints = []
 
@@ -80,6 +94,7 @@ def execute_path(waypoints):
     
     print("planning......")
     plan = group.compute_cartesian_path(waypoints, 0.01, 0)
+    full_waypoints.append(copy.deepcopy(capture_pose))
     # print(plan)
     # rospy.sleep(2.0)
     temp = input("pause to see Rviz, y to execute")
