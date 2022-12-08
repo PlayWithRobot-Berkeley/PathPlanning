@@ -20,6 +20,7 @@ def record_the_writting_pose(gripper: robot_gripper.Gripper) -> Pose:
     while input("Manually move the end-effector to the desirable writing pose, press \"y\" if confirmed").lower() != 'y':
         pass
     _ = tf2_ros.TransformListener(tfBuffer)
+    rospy.sleep(1)
     try:
         trans = tfBuffer.lookup_transform('right_hand', 'base', rospy.Time())
     except tf2_ros.LookupException as e1:
@@ -94,8 +95,8 @@ def execute_path(gripper: robot_gripper, digits: int, init_pose: Pose):
         gripper.close()
         # NOW the EEF is at the `init_pose` for THIS digit
         # write this digit
-        digit_path = dp.plan_for_digit(int(c), init_pose)
-        plan = group.compute_cartesian_path(digit_path, 0.01, 0)
+        paths = dp.plan_for_digit(int(c), init_pose)
+        plan = group.compute_cartesian_path(paths, 0.01, 0)
         while input("pause to see Rviz, y to execute").lower() != 'y': pass
         group.execute(plan[0])
         rospy.sleep(2.0)
@@ -117,7 +118,8 @@ def main():
     # STEP ONE: calibration the writting pose
     right_gripper = robot_gripper.Gripper('right_gripper')
     right_gripper.calibrate()
-    writing_pose = record_the_writting_pose()
+    rospy.sleep(2.0)
+    writing_pose = record_the_writting_pose(right_gripper)
 
     while input("Calibrated! Now feel free to drag the robot "\
         + "arm to a pose where it can see the question, Press"\
