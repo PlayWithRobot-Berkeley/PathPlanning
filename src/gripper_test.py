@@ -18,8 +18,8 @@ print('Closing...')
 right_gripper.close()
 rospy.sleep(1.0)
 
-# Open the right gripper
-print('Opening...')
-right_gripper.open()
-rospy.sleep(1.0)
-print('Done!')
+# # Open the right gripper
+# print('Opening...')
+# right_gripper.open()
+# rospy.sleep(1.0)
+# print('Done!')
